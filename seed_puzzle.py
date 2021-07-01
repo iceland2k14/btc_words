@@ -40,13 +40,27 @@ def mnem_to_seed(words):
 
 def check_known_key(pvklist):
     hit = False
-    for line in pvklist:
-        if int('1'+bin(int(line,16))[2:][-19:],2) == known_keys_20_30[0]:
+    for k, line in enumerate(pvklist):
+        if int('1'+bin(int(line,16))[2:][-19:],2) == known_keys_20_30[0] and \
+        int('1'+bin(int(pvklist[k+1],16))[2:][-20:],2) == known_keys_20_30[1] and \
+        int('1'+bin(int(pvklist[k+2],16))[2:][-21:],2) == known_keys_20_30[2]:
             hit = True
             print('='*30)
             print(line)
             print('='*30)
     return hit
+
+
+def seed_to_masked_privatekey(seed, n):
+    full_pvklist = []
+    masked_pvklist = []
+    b = bitcoinlib.keys.HDKey.from_seed(seed)
+    const = "m/44'/0'/0'/0/"
+    for k in range(n):
+        b0=b.subkey_for_path(const + str(k))
+        full_pvklist.append(b0.private_hex)
+        masked_pvklist.append(hex(int('1'+bin(int(b0.private_hex,16))[2:][-k:],2)))
+    return full_pvklist, masked_pvklist
 
                 
 def seed_to_privatekey(seed, n=1):
@@ -59,9 +73,13 @@ def seed_to_privatekey(seed, n=1):
         
     flg = check_known_key(pvklist)
     if flg == True:
-        print('='*30,'Seed Candidate','='*30)
+        print('='*30,'Seed Found','='*30)
         print(seed.hex())
-        print('='*65)
+        print('='*72)
+        full_pvklist, masked_pvklist = seed_to_masked_privatekey(seed, 256)
+        print('INDEX      FULL_KEY                                                        MASKED_KEY')
+        for z in range(1,len(masked_pvklist)):
+            print(z, ' : ', full_pvklist[z], ' : ',masked_pvklist[z])
         exit()
 
 m = 0 
