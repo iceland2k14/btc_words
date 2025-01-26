@@ -13,6 +13,9 @@ derivation_total_path_to_check = 1      # default = 1
 ```
 _entropy_bits_to_mnemonic_ function can be modified if any other language words are needed. Currenly the default is English Words only.
 
+# p2sh
+The script p2sh_brute, try to operate on only HASH160 collision where p2sh address could be redeemed using the correct redeem script. It avoids the EC operation of privatekey -> Pubkey.
+
 # Run
 ```
 (base) C:\anaconda3>python bip44_words_mcpu.py
@@ -43,6 +46,15 @@ Starting thread:  0
 
 (base) C:\anaconda3>python seed_puzzle.py
 BIP44 Searched Mnemonics : 150800   with Total Derivation Path 20 to 30 each
+SIGINT or CTRL-C detected. Exiting gracefully. BYE
+
+(base) C:\anaconda3>python p2sh_brute.py
+
+[+] Program Starting ... Please Wait
+[+] Loaded 7644366 p2sh Address.   Last: 3GrRsA9sRXMPeTnsGHK223sCmRgzethGDZ
+100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 7644366/7644366 [01:20<00:00, 95086.76it/s]
+[+] Converted back to HASH160 bytes and loaded in a SET...
+[Completed    100200000]  [238399.81 Key/s]  Script=       0014a635ba8a5ad714fc001411e50cca70484cf872b9
 SIGINT or CTRL-C detected. Exiting gracefully. BYE
 ```
 
